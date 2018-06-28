@@ -76,7 +76,7 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(4)
         start_time = time.time()
         results = pool.map(process_line, chunk)
-        final_result.append(result['corefs'])
+        final_result.append(results['corefs'])
         print('result', results)
         pool.close()
         pool.join()
