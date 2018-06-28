@@ -1,5 +1,10 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json 
+import time
+import psutil
+
+
+import multiprocessing 
 
 nlp = StanfordCoreNLP(r'./stanford-corenlp-full-2018-02-27')
 props = {'annotators': 'coref, ssplit', 'pipelineLanguage': 'en'}
@@ -7,47 +12,121 @@ props = {'annotators': 'coref, ssplit', 'pipelineLanguage': 'en'}
 sentences = []
 j = []
 coref_data = []
-with open('sampleDecoded.txt', 'r') as file:
-    answer = []
-    for line in file:
-        if 'start question' in line: 
-            print('it hits here')
-            index = 1
-            j = []
-            continue
-    
-        elif 'end question' in line:
-            index = 0  
-            coref_data.append({label: j, 'question': question})
-            continue
+qt =   []
+answer = []
 
-        elif index == 1 :
-            print('line', line)
-            label = line.rstrip()
-            index = 2
-            continue
-    
-        elif index == 2:
-            question = line
-            question = question.rstrip()
-            question = question + ' .'
-            index = 0
-            continue
-       
-       
-        line = line.rstrip()       
-        print('question', question)
-        sentence = ' '.join([question, line])
-        print('sentence', sentence)
-        result =  nlp.annotate( sentence, properties=
-                {
+def get_chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+def run_annotation(sentence):
+    return nlp.annotate( 
+        sentence, 
+        properties = {
                     'timeout': '10000000',
                     'annotators': 'coref',
                     'outputFormat': 'json'
-                })          
+                    }) 
 
+def process_line(line):
+    return run_annotation(self_proc)
+    
 
+def setup():
+    with open('sampleDecoded2.txt', 'r') as file:
+        answer = []
+        for line in file:
+            if 'start question' in line: 
+                index = 1
+                j = []
+                continue
         
+            elif 'end question' in line:
+                index = 0  
+                coref_data.append({label: j, 'question': question})
+                continue
+
+            elif index == 1 :
+                label = line.rstrip()
+                index = 2
+                continue
+        
+            elif index == 2:
+                question = line
+                question = question.rstrip()
+                question = question + ' .'
+                index = 0
+                continue
+        
+        
+            line = line.rstrip()       
+            sentence = ' '.join([question, line])
+            result = []
+            qt.append(sentence) 
+
+
+
+
+
+if __name__ == '__main__':
+    setup()
+    chunks = get_chunks(qt, 4)
+
+    for chunk in chunks:
+        pool = multiprocessing.Pool(4)
+        start_time = time.time()
+        try:
+            results = pool.apply_async(process_line, chunk)
+        except psutil.AccessDenied:    
+            continue
+        pool.close()
+        pool.join()
+        end_time = time.time()
+
+        print('end', start_time, end_time)
+
+
+nlp.close()
+'''
+processes = [mp.Process(target=rand_string, args=(output)) for x in range(4)]
+
+
+
+processes = [mp.Process(target=rand_string, args=(5, output)) for x in range(4)]
+
+# Run processes
+for p in processes:
+    p.start()
+
+
+# Exit the completed processes
+for p in processes:
+    p.join()
+
+# Get process results from the output queue
+results = [output.get() for p in processes]
+
+print(results)
+
+
+if __name__ == '__main__':
+    pool = Pool(processes=(cpu_count() - 1))
+    
+
+
+            jobs = []
+            for i in range(4):
+                annontation = Process(target=process_line, args=(qt[i],))
+                jobs.append(annontation)
+                annontation.start()
+                annontation.join()
+            result.append(jobs)
+            qt = []
+        else:
+            pass
+
+
         result = json.loads(result)
     
         q = []
@@ -65,3 +144,4 @@ with open('sampleStanfordCoref.json', 'w') as q:
     json.dump(coref_data,  q)
         
 
+'''
