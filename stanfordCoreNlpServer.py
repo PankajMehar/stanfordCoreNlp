@@ -20,7 +20,8 @@ def get_chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def run_annotation(sentence):
+
+def process_line(sentence):
     return nlp.annotate( 
         sentence, 
         properties = {
@@ -28,9 +29,6 @@ def run_annotation(sentence):
                     'annotators': 'coref',
                     'outputFormat': 'json'
                     }) 
-
-def process_line(line):
-    return run_annotation(self_proc)
     
 
 def setup():
@@ -77,6 +75,7 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(4)
         start_time = time.time()
         results = pool.apply_async(process_line, chunk)
+        print('result', result)
         pool.close()
         pool.join()
         end_time = time.time()
