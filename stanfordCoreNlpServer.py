@@ -76,10 +76,7 @@ if __name__ == '__main__':
     for chunk in chunks:
         pool = multiprocessing.Pool(4)
         start_time = time.time()
-        try:
-            results = pool.apply_async(process_line, chunk)
-        except psutil.AccessDenied:    
-            continue
+        results = pool.apply_async(process_line, chunk)
         pool.close()
         pool.join()
         end_time = time.time()
