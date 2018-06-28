@@ -22,6 +22,7 @@ def get_chunks(l, n):
 
 
 def process_line(sentence):
+    print('sentence', sentence)
     return nlp.annotate( 
         sentence, 
         properties = {
@@ -74,13 +75,12 @@ if __name__ == '__main__':
     for chunk in chunks:
         pool = multiprocessing.Pool(4)
         start_time = time.time()
-        results = pool.apply_async(process_line, chunk)
+        results = pool.map(process_line, chunk)
         print('result', results)
         pool.close()
         pool.join()
         end_time = time.time()
 
-        print('end', start_time, end_time)
 
 
 nlp.close()
