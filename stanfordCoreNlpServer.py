@@ -75,7 +75,7 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(4)
         start_time = time.time()
         results = pool.apply_async(process_line, chunk)
-        print('result', result)
+        print('result', results)
         pool.close()
         pool.join()
         end_time = time.time()
