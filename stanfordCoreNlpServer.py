@@ -71,16 +71,19 @@ def setup():
 if __name__ == '__main__':
     setup()
     chunks = get_chunks(qt, 4)
-
+    final_result = []
     for chunk in chunks:
         pool = multiprocessing.Pool(4)
         start_time = time.time()
         results = pool.map(process_line, chunk)
+        final_result.append(result['corefs'])
         print('result', results)
         pool.close()
         pool.join()
         end_time = time.time()
 
+    with open('hello.json', 'w') as f:
+        json.dump(coref_data,  q)
 
 
 nlp.close()
