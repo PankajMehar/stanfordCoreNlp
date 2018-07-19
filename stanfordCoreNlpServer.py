@@ -1,7 +1,7 @@
 from stanfordcorenlp import StanfordCoreNLP
 import json 
 
-nlp = StanfordCoreNLP(r'./stanford-corenlp-full-2018-02-27')
+nlp = StanfordCoreNLP(r'/Users/rajat.jain/Documents/thesis/stanford-corenlp-full-2018-02-27')
 props = {'annotators': 'coref, ssplit', 'pipelineLanguage': 'en'}
 
 sentences = []
