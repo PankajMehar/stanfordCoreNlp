@@ -14,9 +14,12 @@ def buildCoref (file_index):
 
     with open(file_name, 'r') as file:
         answer = []
+        question_number = 0
         for line in file:
             if 'start question' in line: 
-                print('it hits here')
+                per_question_number = 0
+                question_number = question_number +1 
+                print('question number -------', question_number)
                 index = 1
                 j = []
                 continue
@@ -33,6 +36,8 @@ def buildCoref (file_index):
                 continue
         
             elif index == 2:
+                per_question_number = per_question_number + 1
+                print('per_question_number -----------', per_question_number)
                 question = line
                 question = question.rstrip()
                 question = question + ' .'
