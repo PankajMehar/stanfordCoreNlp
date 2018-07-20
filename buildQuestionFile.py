@@ -55,7 +55,8 @@ def build_indexs():
 
 build_indexs()
 
-
+with open('dummy.json', 'w') as f:
+    json.dump(result, f)
 
 
 def  get_key_and_answer_indexs(line):
@@ -101,26 +102,28 @@ with open('resultQuestionFile4.txt', 'w') as file:
                     answer_referent_indexs = pair[1]
                     
                     answer_string = ''
-                    count = 0
+                    
                     count_number_of_answer_referent_index = 0
+                    print('count_number_of_answer_referent_index', answer_referent_indexs, count_number_of_answer_referent_index , len(answer_referent_indexs))
                     for list_of_index in answer_referent_indexs:
+                        count = 1
                         length_of_index = len(list_of_index)
                         count_number_of_answer_referent_index = count_number_of_answer_referent_index + 1
                         for answer_index in list_of_index:
-                        
+                            print('count', count)
                             answer_string =  answer_string  + answer_index + ':' + ' '.join(question_referent_indexs) 
-                            if count_number_of_answer_referent_index < len(answer_referent_indexs):
+
+                            if count < len(list_of_index) :
+                                print('dewfwffew', count , len(list_of_index))
                                 answer_string = answer_string + ';'
-                                continue
-                            count = count + 1
-    
+                                count = count + 1
+                                 
                     token_string = token_string + answer_string  
                     referent_string = referent_string + index + str([token_string]) + ' ' 
                 
                 counter = counter + 1 
 
             final_string = line  +  '\t' + referent_string + '\n'
-            print('final', final_string)
             file.write(final_string)
             final_string = ''
             question_number +=1
