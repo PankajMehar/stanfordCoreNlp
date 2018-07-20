@@ -1,15 +1,20 @@
-import os
 import json
-
-with open('sampleStanfordCoref.json', 'r') as f:
-    array1 = json.load(f)
-
-with open('sampleStanfordCoref2.json', 'r') as f:
-    array2 = json.load(f)    
+import os
+from os import listdir
+from os.path import isfile, join
 
 
-final_array = array1 + array2
-print('dqwdqwdq', final_array)
+dir_path = './corefFiles/'
+onlyfiles = [f for f in listdir(dir_path) if isfile(join(dir_path, f))]
+data = []
 
-with open('finalFile.json', 'w') as f:
-    json.dump(final_array, f)
+for i in range(1, 21):
+    file_name = 'coref'+ str(i) + '.json'
+    file_path = join(dir_path + file_name)
+    with open(file_path, 'r') as f:
+        coref = json.load(f)
+        data = data + coref
+
+
+with open('final_coref.json', 'w') as f:
+    json.dump(data, f)        
