@@ -76,7 +76,7 @@ def  get_key_and_answer_indexs(line):
     return (key, answer_indexs[0: 20])
 
 
-with open('resultQuestionFile4.txt', 'w') as file:
+with open('corefQuestionFile.txt', 'w') as file:
     with open('InsuranceQA.question.anslabel.token.100.pool.solr.test.encoded', 'r') as original_file:
         question_number = 0
         for line in original_file:
