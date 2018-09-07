@@ -47,7 +47,7 @@ def buildQuestionAnswerPair(line_index):
 
             list_of_question_strings = [token for token in newline if 'idx_' in token]
             questionString = ' '.join(buildResultString(list_of_question_strings))
-            print('question_string', question_string)
+            print('question_string', questionString)
             data.update({'question': questionString})   
 
             list_of_answer_indices = [token for token in newline if 'idx_' not in token][1:][0: 20]
