@@ -9,8 +9,8 @@ j = []
 coref_data = []
 
 def buildCoref (file_index):
-    file_name = 'textData' + file_index + '.txt'
-    coref_file_name = 'coref'+ file_index + '.json'
+    file_name = 'textData' + file_index + 'valid' +  '.txt'
+    coref_file_name = 'coref'+ file_index + 'valid' + '.json'
 
     with open(file_name, 'r') as file:
         answer = []
@@ -30,14 +30,15 @@ def buildCoref (file_index):
                 continue
 
             elif index == 1 :
-                print('line', line)
+                per_question_number = per_question_number + 1
+                print('per_question_number----------', per_question_number)
+
                 label = line.rstrip()
                 index = 2
                 continue
         
             elif index == 2:
-                per_question_number = per_question_number + 1
-                print('per_question_number -----------', per_question_number)
+
                 question = line
                 question = question.rstrip()
                 question = question + ' .'

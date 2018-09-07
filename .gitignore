@@ -1,3 +1,6 @@
 InsuranceQA.label2answer.token 2.encoded
 InsuranceQA.question.anslabel.token.100.pool.solr.test.encoded
 stanford-corenlp-full-2018-02-27
+*.DS_Store
+decodingScript.pyc
+stanfordCoreNlpServer.pyc

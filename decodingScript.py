@@ -33,7 +33,7 @@ def buildResultString(list_of_strings):
     return result_list_of_strings
 
 def buildQuestionAnswerPair(line_index):
-    with open('InsuranceQA.question.anslabel.token.100.pool.solr.test.encoded') as input:
+    with open('InsuranceQA.question.anslabel.token.500.pool.solr.valid.encoded') as input:
         range_start = (line_index -1) * 100
     
         range_end = range_start + 100
@@ -46,9 +46,8 @@ def buildQuestionAnswerPair(line_index):
             newline = ' '.join(line.split()).split(' ')
 
             list_of_question_strings = [token for token in newline if 'idx_' in token]
-            print('list_of_question_strings', list_of_question_strings)
             questionString = ' '.join(buildResultString(list_of_question_strings))
-            print('questionStrin', questionString)
+            print('question_string', question_string)
             data.update({'question': questionString})   
 
             list_of_answer_indices = [token for token in newline if 'idx_' not in token][1:][0: 20]
@@ -66,7 +65,7 @@ def buildText(file_index):
     buildVocabulary()
     answerLabels = buildAnswerLabels()
     questionAnswerPair = buildQuestionAnswerPair(int(file_index))
-    input_file_path = './textData' + file_index + '.txt'
+    input_file_path = './textData' + file_index + 'valid' + '.txt'
     with open(input_file_path, 'w') as output:
         for item in question:
             for key , value in item.items():
