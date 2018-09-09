@@ -20,5 +20,5 @@ for items in data:
             k.append({key: m})
 
 with open('questionMatchingMentionSample.json', 'w') as q:
-    json.dump(k, q)    
+    json.dump(k[0:10], q)    
 

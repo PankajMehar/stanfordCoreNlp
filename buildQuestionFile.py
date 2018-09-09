@@ -18,47 +18,9 @@ def getIndexs(item):
     data = item.split(' ')
     return [vocabulary_dict[token] for token in data]
 
-def build_indexs():
-    for item in data:
-        for key , value in item.items():
-            per_question_cluster_dict = dict()
-            final_list = list()
-            for cluster in value:
-                per_answer_cluster = []
-                if len(cluster) == 0:
-                    final_list.append([])
-                    continue
-
-                per_pair_token_indexs= []
-                for pair in cluster:
-                    if len(pair) == 1 or len(pair) == 0:
-                        per_pair_token_indexs.append([])
-                        continue
-                    question_mention = pair[0]
-                    answer_mentions = pair[1:]
-                    
-                    question_mention_tokens = question_mention.split(' ')
-                    question_mention_tokens_indexs = [vocabulary_dict[token] for token in question_mention_tokens]
-                    per_pair_token_indexs.append(question_mention_tokens_indexs)
-                    
-                    ## this is for the second case 
-                    answer_mentions_tokens_indexs = [getIndexs(item) for item in answer_mentions]
-                    per_pair_token_indexs.append(answer_mentions_tokens_indexs)
-                per_answer_cluster.append(per_pair_token_indexs)
-                
-                final_list.append(per_answer_cluster)
-
-            per_question_cluster_dict.update({key: final_list})
-            
-        result.append(per_question_cluster_dict)           
 
 
-build_indexs()
-
-with open('dummy.json', 'w') as f:
-    json.dump(result, f)
-
-
+'''
 def  get_key_and_answer_indexs(line):
     line = ' '.join(line.split()).split(' ')
     key = line[0]
@@ -77,7 +39,7 @@ def  get_key_and_answer_indexs(line):
 
 
 with open('corefQuestionFile.txt', 'w') as file:
-    with open('InsuranceQA.question.anslabel.token.100.pool.solr.test.encoded', 'r') as original_file:
+    with open('sampleQuestion.txt', 'r') as original_file:
         question_number = 0
         for line in original_file:
 
@@ -132,3 +94,4 @@ with open('corefQuestionFile.txt', 'w') as file:
             question_number +=1
 
                 
+'''
