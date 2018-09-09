@@ -1,62 +1,81 @@
 import os
 import json
 import re
+import nltk
+import itertools
 
+result = []
+vocabulary_dict = dict()
 
 with open ('./questionMatchingMentionSample.json', 'r') as f:
-    clusters = json.load(f)
+    data = json.load(f)
 
-result = list()
+
+with open('vocabulary', 'r') as vocabulary:
+    for line in vocabulary:
+        tokens = line.split()
+        vocabulary_dict[tokens[1]] = tokens[0]
+
+def getIndexs(item):
+    data = item.split(' ')
+    return [vocabulary_dict[token] for token in data]
+
 def filteringMentions(question_mention, answer_mention):
-    if len(answer_mention) == 1:
+    list_of_pronoun_tags = ['PRP', 'PRP$', 'WP']
+    part_of_speech = nltk.pos_tag([answer_mention])[0][1] 
+    if part_of_speech in list_of_pronoun_tags:
         return answer_mention
-
-    question_mention_tokens = question_mention.split(' ')
-    question_mention_tokens_lowercase = [token.lower() for token in question_mention_tokens]
-    answer_mention = answer_mention.split(' ')
-    for mention in answer_mention: 
-        if mention in question_mention_tokens or mention in question_mention_tokens_lowercase:
-            return
-    return ' '.join(answer_mention)
+    return None
     
 
+def valid_cluster(cluster):
+    if len(cluster) == 0 or len(cluster[0]) == 0:
+        return False
+    for pair in cluster[0]:
+        if pair['position'][0] == 1:
+            return True
+    return False
+
+def is_question_pair(pa):
+    if pa['position'][0] == 1:
+        return True
+    return False
+
+def build_pairs(cluster):
+    answer_substrings = []
+    pair = dict()
+    for pa in cluster:
+        if is_question_pair(pa):
+            pair['replacements'] =  getIndexs(pa['text'])
+            continue
+        else:
+            answer_substrings.append(filteringMentions(pair['replacements'],pa['text']))
+
+    answer_substrings = list(set([x for x in answer_substrings if x is not None]))
+    if(len(answer_substrings) == 0):
+        return {}
+
+    pair['answer_tokens'] = list(itertools.chain(*[getIndexs(item) for item in answer_substrings]))
+    return pair
+
 def referent_tokens():
-    # cluster [0] we are only dealing with one question here
-    for cluster in clusters:
-        for key, value in cluster.items():
-            reffering_tokens = list()
-            per_question_referring_tokens = dict()
-            for answer_clusters in value:
-                question_mention = ''
-                per_answer_tokens = list()
-                if len(answer_clusters) == 0:
-                    reffering_tokens.append([])
-                    continue
+    result = []
+    for item in data:
+        key = item.keys()[0]
+        clusters = item.values()[0]
+        pairs = []
+        for cluster in clusters:
+            answer_substrings = []
+            if not valid_cluster(cluster):
+                pairs.append({})
+                continue
+            else:
+                pairs.append(build_pairs(cluster[0]))
+        result.append({'key': key, 'pairs': pairs})        
+                
+    return result
 
-                for answer_cluster in answer_clusters:
-                    each_answer_cluster_tokens = []
-                    for item in answer_cluster:
-                        if item['position'][0] == 1:
-                            question_mention = item['text']
-                            each_answer_cluster_tokens.append(question_mention)
-                            continue
-                    ### Todo find the better solution to reject the tokens
-                        mention = filteringMentions(question_mention, item['text'])
-
-                        if mention is not None:
-                            each_answer_cluster_tokens.append(mention)
-                            # to remove the duplicates
-                            each_answer_cluster_tokens = list(set(each_answer_cluster_tokens))
-                            print('each_answer_cluster_tokens', each_answer_cluster_tokens)
-
-                    per_answer_tokens.append(each_answer_cluster_tokens)
-
-                reffering_tokens.append(per_answer_tokens)
-            per_question_referring_tokens.update({key : reffering_tokens})   
-            result.append(per_question_referring_tokens)  
-                    
-                    
-                 
-referent_tokens()
 with open('questionClusters.json', 'w') as file:
-    json.dump(result, file)
+    json.dump(referent_tokens(), file)
+
+    
