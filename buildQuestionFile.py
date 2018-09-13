@@ -58,7 +58,7 @@ with open('InsuranceQA.question.anslabel.token.500.pool.solr.test.encoded', 'r')
         final_string = line + '\t' + referent_part + '\n' 
         result.append(final_string)
          
-with open('hello.txt', 'w') as f:
+with open('corefs.txt', 'w') as f:
     for line in result:
         f.write(line)
             
